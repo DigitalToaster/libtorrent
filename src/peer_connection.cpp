@@ -5176,7 +5176,7 @@ namespace libtorrent {
 				++m_outstanding_piece_verification;
 
 #ifndef TORRENT_DISABLE_LOGGING
-				peer_log(peer_log_alert::info, "SEED_MODE_FILE_ASYNC_HASH"
+				peer_log(peer_log_alert::info, "SEED_MODE_ASYNC_HASH"
 					, "piece: %d", static_cast<int>(r.piece));
 #endif
 				// this means we're in seed mode and we haven't yet
@@ -5253,6 +5253,13 @@ namespace libtorrent {
 
 		if (error)
 		{
+#ifndef TORRENT_DISABLE_LOGGING
+			peer_log(peer_log_alert::info, "SEED_MODE_HASH"
+				, "error: %s operation: %s piece: %d"
+				, error.ec.message().c_str()
+				, operation_name(error.operation)
+				, static_cast<int>(piece));
+#endif
 			t->handle_disk_error("hash", error, this);
 			t->leave_seed_mode(false);
 			return;
@@ -5263,7 +5270,7 @@ namespace libtorrent {
 			&& piece_hash != t->torrent_file().hash_for_piece(piece))
 		{
 #ifndef TORRENT_DISABLE_LOGGING
-			peer_log(peer_log_alert::info, "SEED_MODE_FILE_HASH"
+			peer_log(peer_log_alert::info, "SEED_MODE_HASH"
 				, "piece: %d failed", static_cast<int>(piece));
 #endif
 
@@ -5278,7 +5285,7 @@ namespace libtorrent {
 			}
 
 #ifndef TORRENT_DISABLE_LOGGING
-			peer_log(peer_log_alert::info, "SEED_MODE_FILE_HASH"
+			peer_log(peer_log_alert::info, "SEED_MODE_HASH"
 				, "piece: %d passed", static_cast<int>(piece));
 #endif
 			if (t->seed_mode() && t->all_verified())

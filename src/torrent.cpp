@@ -946,6 +946,10 @@ bool is_downloading_state(int const st)
 		if ((mask & torrent_flags::seed_mode)
 			&& !(flags & torrent_flags::seed_mode))
 		{
+#ifndef TORRENT_DISABLE_LOGGING
+			debug_log("*** set-seed-mode: %d"
+				, bool(mask & torrent_flags::seed_mode));
+#endif
 			leave_seed_mode(false);
 		}
 		if (mask & torrent_flags::upload_mode)
