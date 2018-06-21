@@ -2277,7 +2277,7 @@ constexpr disk_job_flags_t disk_interface::cache_hit;
 		l.unlock();
 
 		bool slow_path = true;
-/*
+
 		if (num_locked_blocks == 0)
 		{
 			// this is the fast path where we don't have any blocks in the cache.
@@ -2285,13 +2285,10 @@ constexpr disk_job_flags_t disk_interface::cache_hit;
 			TORRENT_ALLOCA(iov, iovec_t, blocks_left);
 			if (m_disk_cache.allocate_iovec(iov) >= 0)
 			{
-				// this is the offset that's aligned to block boundaries
-				std::int64_t const adjusted_offset = j->d.io.offset & ~(default_block_size - 1);
-
 				// if this is the last piece, adjust the size of the
 				// last buffer to match up
 				iov[blocks_left - 1] = iov[blocks_left - 1].first(aux::numeric_cast<std::size_t>(
-					std::min(int(piece_size - adjusted_offset)
+					std::min(int(piece_size)
 					- (blocks_left - 1) * default_block_size, default_block_size)));
 				TORRENT_ASSERT(iov[blocks_left - 1].size() > 0);
 
@@ -2326,7 +2323,6 @@ constexpr disk_job_flags_t disk_interface::cache_hit;
 				}
 			}
 		}
-*/
 
 		status_t ret = status_t::no_error;
 		if (slow_path)
