@@ -2277,7 +2277,7 @@ constexpr disk_job_flags_t disk_interface::cache_hit;
 		l.unlock();
 
 		bool slow_path = true;
-
+/*
 		if (num_locked_blocks == 0)
 		{
 			// this is the fast path where we don't have any blocks in the cache.
@@ -2326,6 +2326,7 @@ constexpr disk_job_flags_t disk_interface::cache_hit;
 				}
 			}
 		}
+*/
 
 		status_t ret = status_t::no_error;
 		if (slow_path)
