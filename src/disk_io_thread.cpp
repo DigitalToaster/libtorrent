@@ -2289,7 +2289,7 @@ constexpr disk_job_flags_t disk_interface::cache_hit;
 				// last buffer to match up
 				iov[blocks_left - 1] = iov[blocks_left - 1].first(aux::numeric_cast<std::size_t>(
 					std::min(int(piece_size)
-					- (blocks_left - 1) * default_block_size, default_block_size)));
+					- (blocks_in_piece - 1) * default_block_size, default_block_size)));
 				TORRENT_ASSERT(iov[blocks_left - 1].size() > 0);
 
 				time_point const start_time = clock_type::now();
