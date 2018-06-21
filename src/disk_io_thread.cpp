@@ -2441,13 +2441,10 @@ namespace libtorrent
 			ret = m_disk_cache.allocate_iovec(iov, blocks_left);
 			if (ret >= 0)
 			{
-				// this is the offset that's aligned to block boundaries
-				boost::int64_t adjusted_offset = j->d.io.offset & ~(block_size-1);
-
 				// if this is the last piece, adjust the size of the
 				// last buffer to match up
-				iov[blocks_left-1].iov_len = std::min(int(piece_size - adjusted_offset)
-					- (blocks_left - 1) * block_size, block_size);
+				iov[blocks_left-1].iov_len = std::min(int(piece_size)
+					- (blocks_in_piece - 1) * block_size, block_size);
 				TORRENT_ASSERT(iov[blocks_left-1].iov_len > 0);
 
 				time_point const start_time = clock_type::now();
