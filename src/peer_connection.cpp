@@ -5261,7 +5261,7 @@ namespace libtorrent {
 				, static_cast<int>(piece));
 #endif
 			t->handle_disk_error("hash", error, this);
-			t->leave_seed_mode(false);
+			t->leave_seed_mode(false, 4);
 			return;
 		}
 
@@ -5274,7 +5274,7 @@ namespace libtorrent {
 				, "piece: %d failed", static_cast<int>(piece));
 #endif
 
-			t->leave_seed_mode(false);
+			t->leave_seed_mode(false, 5);
 		}
 		else
 		{
@@ -5289,7 +5289,7 @@ namespace libtorrent {
 				, "piece: %d passed", static_cast<int>(piece));
 #endif
 			if (t->seed_mode() && t->all_verified())
-				t->leave_seed_mode(true);
+				t->leave_seed_mode(true, 6);
 		}
 
 		// try to service the requests again, now that the piece

@@ -565,7 +565,7 @@ bool is_downloading_state(int const st)
 		m_current_gauge_state = static_cast<std::uint32_t>(new_gauge_state);
 	}
 
-	void torrent::leave_seed_mode(bool skip_checking)
+	void torrent::leave_seed_mode(bool skip_checking, int caller)
 	{
 		if (!m_seed_mode) return;
 
@@ -583,8 +583,8 @@ bool is_downloading_state(int const st)
 		}
 
 #ifndef TORRENT_DISABLE_LOGGING
-		debug_log("*** LEAVING SEED MODE (%s)"
-			, skip_checking ? "as seed" : "as non-seed");
+		debug_log("*** LEAVING SEED MODE (%s) caller (%d)"
+			, skip_checking ? "as seed" : "as non-seed", caller);
 #endif
 		m_seed_mode = false;
 		// seed is false if we turned out not
@@ -950,7 +950,7 @@ bool is_downloading_state(int const st)
 			debug_log("*** set-seed-mode: %d"
 				, bool(mask & torrent_flags::seed_mode));
 #endif
-			leave_seed_mode(false);
+			leave_seed_mode(false, 1);
 		}
 		if (mask & torrent_flags::upload_mode)
 			set_upload_mode(bool(flags & torrent_flags::upload_mode));
@@ -2139,7 +2139,7 @@ bool is_downloading_state(int const st)
 
 					// being in seed mode and missing a piece is not compatible.
 					// Leave seed mode if that happens
-					if (m_seed_mode) leave_seed_mode(true);
+					if (m_seed_mode) leave_seed_mode(true, 2);
 
 					if (has_picker() && m_picker->have_piece(piece))
 					{
@@ -2210,7 +2210,7 @@ bool is_downloading_state(int const st)
 
 		// we're checking everything anyway, no point in assuming we are a seed
 		// now.
-		leave_seed_mode(true);
+		leave_seed_mode(true, 3);
 
 		m_ses.disk_thread().async_release_files(m_storage);
 
@@ -7429,9 +7429,12 @@ bool is_downloading_state(int const st)
 			&& m_state != torrent_status::checking_files
 			&& m_state != torrent_status::allocating);
 
+#ifndef TORRENT_DISABLE_LOGGING
+		debug_log("*** RESUME_DOWNLOAD");
+#endif
 		// we're downloading now, which means we're no longer in seed mode
 		if (m_seed_mode)
-			leave_seed_mode(false);
+			leave_seed_mode(false, 0);
 
 		TORRENT_ASSERT(!is_finished());
 		set_state(torrent_status::downloading);
